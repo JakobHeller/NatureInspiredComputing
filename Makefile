@@ -1,4 +1,4 @@
-Khexplorer: Khexplorer.o KheperaInterface.o KheperaUtility.o Controller.o ValueSystem.o Operator.o ThreadableBase.o
+Khexplorer: Khexplorer.o KheperaInterface.o KheperaUtility.o Controller.o ValueSystem.o Operator.o ThreadableBase.o SmartKhepera.o
 	g++ -o $@ $+ -pthread
 	
 %.o: %.cpp 
