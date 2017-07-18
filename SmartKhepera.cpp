@@ -30,6 +30,7 @@ void CSmartKhepera::StartRobot()
 
 void CSmartKhepera::StopRobot()
 {
+    StopLearning();
 	m_pOperate->Stop();
 	m_pControl->Stop();
 	m_pUtil->SetSpeed({ {0,0} });
