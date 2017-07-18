@@ -1,14 +1,16 @@
 #include <math.h>
 #include <algorithm>
+#include <iostream>
+#include <iomanip>
 #include "Controller.h"
 
-#define DISTANCE_LIMIT (0.9 * CLOSE_SENSOR_VAL)
+#define DISTANCE_LIMIT (0.5 * CLOSE_SENSOR_VAL)
 
 bool NodeActivitySort(SNode a, SNode b);
 
 CController::CController(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 {
-	m_Sigma = 0.5;
+	m_Sigma = 0.1;
 	m_LearnWeight = 0.3;
 
 	/*
@@ -31,7 +33,7 @@ CController::CController(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 	*/
 	// pre-train
 	CreateTrainingData();
-	//Train();
+	Train();
 }
 
 void CController::DoCycle()
@@ -67,6 +69,16 @@ void CController::Adapt(SIOSet ideal)
 		m_NetworkNodes[n].lWeight += (ideal.speed.left - current.speed.left) * act * m_LearnWeight;
 		m_NetworkNodes[n].rWeight += (ideal.speed.right - current.speed.right) * act * m_LearnWeight;
 	}
+}
+
+double CController::NodeMaxDimensionalDistance(SNode nodeA, SNode nodeB)
+{
+    double dist = 0;
+    for(int i = 0; i < INPUT_COUNT; i++)
+    {
+        dist = fmax(dist, abs(nodeA.center.data[i] - nodeB.center.data[i]));
+    }
+    return dist;
 }
 
 double CController::RbfBase(Int8 sensors, Int8 nodeCenter)
@@ -195,9 +207,53 @@ void CController::Train()
 	}
 }
 
+void CController::AddNode(Int8 sensors, double left, double right)
+{
+    SNode node;
+    node.center = sensors;
+    node.lWeight = left;
+    node.rWeight = right;
+    node.activity = 1;
+    
+    int dist = 0;
+    for (int n = 0; n < m_NetworkNodes.size(); n++)
+	{
+        dist = fmax(dist, NodeMaxDimensionalDistance(node, m_NetworkNodes[n]));
+	}
+    
+    if(dist > MAX_DIMENSION_DISTANCE || m_NetworkNodes.size() == 0)
+    {
+        m_NetworkNodes.push_back(node);
+        std::cout << "Added new node at";
+        for(int i = 0; i < INPUT_COUNT; i++)
+        {
+            std::cout << " " << std::setfill(' ') << std::setw(4) << node.center.data[i];
+        }
+        std::cout << std::endl;
+    }
+}
+
 void CController::Forget()
 {
+    printf("Too much knowledge! Must forget!");
 	std::sort(m_NetworkNodes.begin(), m_NetworkNodes.end(), NodeActivitySort);
+    
+    int count = 0;
+    for (auto it = m_NetworkNodes.begin(); it != m_NetworkNodes.end(); it++)
+    {
+        count++;
+        if(count > NODE_COUNT)
+        {
+            printf("Forgetting node at %d %d %d %d %d %d \n",
+            it->center.data[0], 
+            it->center.data[1], 
+            it->center.data[2], 
+            it->center.data[3], 
+            it->center.data[4], 
+            it->center.data[5]);
+        }
+    }
+    
 	m_NetworkNodes.resize(NODE_COUNT);
 }
 
@@ -227,15 +283,26 @@ SIOSet CController::Evaluate(Int8 sensors)
 	// add extra nodes if activation is too low
 	if (totalActivation < TOTAL_ACTIVATION_LIMIT)
 	{
-		SNode newNode;
-		newNode.center = sensors;
-		newNode.lWeight = out.speed.left;
-		newNode.rWeight = out.speed.right;
-		newNode.activity = 10;
-		m_NetworkNodes.push_back(newNode);
+        AddNode(sensors,
+            m_pUtil->GetUniformRandom(-MAX_SPEED, MAX_SPEED), 
+            m_pUtil->GetUniformRandom(-MAX_SPEED, MAX_SPEED));
 	}
 
 	return out;
+}
+
+void CController::ListNodes()
+{
+    std::cout << "These are my nodes:" << std::endl;
+    for (auto it = m_NetworkNodes.begin(); it != m_NetworkNodes.end(); it++)
+    {
+        std::cout << "Node at";
+        for(int i = 0; i < INPUT_COUNT; i++)
+        {
+            std::cout << " " << std::setfill(' ') << std::setw(4) << it->center.data[i];
+        }
+        std::cout << " with weights " << it->lWeight << " and " << it->rWeight << std::endl;
+    }
 }
 
 // helper

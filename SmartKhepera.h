@@ -16,6 +16,8 @@ public:
 	void StopRobot();
 	void StartLearning();
 	void StopLearning();
+    
+    void StopMoving();
 
 	void StartVerbosity();
 	void StopVerbosity();

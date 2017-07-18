@@ -19,7 +19,7 @@ SIOSet CValueSystem::Correct(SIOSet calculated)
 	// convert speed
 	SDirectionalSpeed directional = ToDirectional(calculated.speed);
 
-	int limit = SafetyDistance(directional.speed);
+	int limit = 200; //SafetyDistance(directional.speed);
 
 	// evaluate sensor data in movement direction
 	int proximity;
@@ -44,14 +44,15 @@ SIOSet CValueSystem::Correct(SIOSet calculated)
 	if (proximity > limit)
 	{	// don't go there, you'll collide!
 		// go anywhere else, just not there. Preferably forward-ish.
-		directional.angle = m_pUtil->GetUniformRandom(-PI/2, PI/2);
+		directional.angle += m_pUtil->GetUniformRandom(-PI/4, PI/4);
 	}
-	else if (directional.speed < MAX_SPEED/2)
+	
+    if (directional.speed < MAX_SPEED/2)
 	{	// you're fine, go faster
-		directional.speed += m_pUtil->GetUniformRandom(0.5, 1);
+		directional.speed = abs(directional.speed) + m_pUtil->GetUniformRandom(0.5, 1);
 		directional.speed *= 1.2;
 	}
-
+    
 	SIOSet correction = calculated;
 	correction.speed = ToComponents(directional);
 
@@ -60,7 +61,8 @@ SIOSet CValueSystem::Correct(SIOSet calculated)
 
 int CValueSystem::SafetyDistance(double speed)
 {
-	int dist = CLOSE_SENSOR_VAL*exp(- speed / (double)MAX_SPEED);
+    int dist = 600 * (1 - (speed / (double)MAX_SPEED));
+	//int dist = fmin(900, CLOSE_SENSOR_VAL*exp(- speed / (double)MAX_SPEED));
 	return dist;
 }
 

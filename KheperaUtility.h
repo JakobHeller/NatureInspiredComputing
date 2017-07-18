@@ -36,7 +36,7 @@ typedef std::lock_guard<std::mutex> ScopedMutexLocker;
 #define CLOSE_SENSOR_VAL 1024
 #define FAR_SENSOR_VAL 0
 #define SENSOR_VAL_RANGE abs(FAR_SENSOR_VAL - CLOSE_SENSOR_VAL)
-#define MAX_SPEED 50
+#define MAX_SPEED 20
 
 class CKheperaUtility
 {

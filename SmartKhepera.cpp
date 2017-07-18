@@ -34,6 +34,8 @@ void CSmartKhepera::StopRobot()
 	m_pOperate->Stop();
 	m_pControl->Stop();
 	m_pUtil->SetSpeed({ {0,0} });
+    
+    m_pControl->ListNodes();
 }
 
 void CSmartKhepera::StartLearning()
@@ -44,6 +46,12 @@ void CSmartKhepera::StartLearning()
 void CSmartKhepera::StopLearning()
 {
 	m_pValues->Stop();
+}
+
+void CSmartKhepera::StopMoving()
+{
+    m_pOperate->Stop();
+    m_pUtil->SetSpeed({ {0,0} });
 }
 
 void CSmartKhepera::StartVerbosity()

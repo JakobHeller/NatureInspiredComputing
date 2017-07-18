@@ -1,3 +1,6 @@
+#include <iostream>
+#include <iomanip>
+
 #include "KheperaUtility.h"
 
 CKheperaUtility::CKheperaUtility()
@@ -9,6 +12,8 @@ CKheperaUtility::CKheperaUtility()
 	m_LastCorrectedResult = SIOSet(Int8(), SSpeed(MAX_SPEED, MAX_SPEED));
 
 	m_bVerbose = false;
+    
+    m_rGenerator = std::default_random_engine(std::random_device{}());
 }
 
 CKheperaUtility::~CKheperaUtility()
@@ -58,18 +63,15 @@ void CKheperaUtility::SetNetworkResult(SIOSet results)
 	// output info
 	if (m_bVerbose)
 	{
-		printf("Controller's results:\n P0: %d P1: %d P2: %d P3: %d P4: %d P5: %d P6: %d P7: %d ==> L: %f R: %f \n",
-			results.sensors.data[0],
-			results.sensors.data[1],
-			results.sensors.data[2],
-			results.sensors.data[3],
-			results.sensors.data[4],
-			results.sensors.data[5],
-			results.sensors.data[6],
-			results.sensors.data[7],
-
-			results.speed.left,
-			results.speed.right);
+        std::cout << "Controller's results:" << std::endl;
+                
+        for(int i = 0; i < 8; i++)
+        {
+            std::cout << " " << std::setfill(' ') << std::setw(4) << results.sensors.data[i];
+        }
+        
+        std::cout << " ==> L: " << results.speed.left << " R: " << results.speed.right;
+        std::cout << std::endl;
 	}
 }
 
@@ -89,18 +91,15 @@ void CKheperaUtility::SetCorrectedResult(SIOSet results)
 	// output info
 	if (m_bVerbose)
 	{
-		printf("ValueSystem's results:\n P0: %d P1: %d P2: %d P3: %d P4: %d P5: %d P6: %d P7: %d ==> L: %f R: %f \n",
-			results.sensors.data[0],
-			results.sensors.data[1],
-			results.sensors.data[2],
-			results.sensors.data[3],
-			results.sensors.data[4],
-			results.sensors.data[5],
-			results.sensors.data[6],
-			results.sensors.data[7],
-
-			results.speed.left,
-			results.speed.right);
+        std::cout << "ValueSystem's results:" << std::endl;
+                
+        for(int i = 0; i < 8; i++)
+        {
+            std::cout << " " << std::setfill(' ') << std::setw(4) << results.sensors.data[i];
+        }
+        
+        std::cout << " ==> L: " << results.speed.left << " R: " << results.speed.right;
+        std::cout << std::endl;
 	}
 }
 

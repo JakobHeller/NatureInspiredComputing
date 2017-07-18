@@ -16,6 +16,8 @@ static const std::string s_StopInfoCmd = "quiet";
 static const std::string s_Help = "help";
 static const std::string s_EndProgram = "exit";
 
+static const std::string s_StopOperator = "hobble";
+
 int main()
 {
 	CSmartKhepera khexplore;
@@ -37,6 +39,7 @@ int main()
 		if (command == s_StopVSCmd) khexplore.StopLearning();
 		if (command == s_StartInfoCmd) khexplore.StartVerbosity();
 		if (command == s_StopInfoCmd) khexplore.StopVerbosity();
+		if (command == s_StopOperator) khexplore.StopMoving();
 		if (command == s_Help) ListCommands();
 	} while (command != s_EndProgram);
 
@@ -60,5 +63,8 @@ void ListCommands()
 	std::cout << "   " << s_StopVSCmd << "       : disables robot learning" << std::endl;
 	std::cout << "   " << s_StartInfoCmd << "       : enables info dumping" << std::endl;
 	std::cout << "   " << s_StopInfoCmd << "        : disables info dumping" << std::endl;
+    
+	std::cout << "   " << s_StopOperator << "        : disables setting speeds" << std::endl;
+    
 	std::cout << std::endl;
 }
