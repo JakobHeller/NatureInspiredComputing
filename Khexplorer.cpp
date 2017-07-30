@@ -70,8 +70,8 @@ void ListCommands()
 	std::cout << "   " << s_StopVSCmd << "       : disables robot learning" << std::endl;
 	std::cout << "   " << s_StartInfoCmd << "       : enables info dumping" << std::endl;
 	std::cout << "   " << s_StopInfoCmd << "        : disables info dumping" << std::endl;
-    std::cout << "   " << s_SaveRBFNodesCmd << "    : save the RBF nodes to file" << std::endl;
-    std::cout << "   " << s_LoadRBFNodesCmd << "    : Load the RBF nodes from file" << std::endl;
+    std::cout << "   " << s_SaveRBFNodesCmd << "         : save the RBF nodes to file" << std::endl;
+    std::cout << "   " << s_LoadRBFNodesCmd << "         : Load the RBF nodes from file" << std::endl;
     
 	std::cout << "   " << s_StopOperator << "       : disables setting speeds" << std::endl;
     

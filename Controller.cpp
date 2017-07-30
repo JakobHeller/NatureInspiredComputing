@@ -6,7 +6,6 @@
 using namespace std;
 #include "Controller.h"
 #include <sstream>
-#include <iterator>
 #include <vector>
 
 #define DISTANCE_LIMIT (0.5 * CLOSE_SENSOR_VAL)
