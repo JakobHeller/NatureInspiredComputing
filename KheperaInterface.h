@@ -1,7 +1,7 @@
 #ifndef __KHEPERAINTERFACE_H
 #define __KHEPERAINTERFACE_H
 
-//#define SIM_ONLY
+#define SIM_ONLY
 
 #ifndef SIM_ONLY 
 	#include <termios.h>

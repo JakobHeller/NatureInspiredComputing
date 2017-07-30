@@ -21,6 +21,11 @@ public:
 
 	void StartVerbosity();
 	void StopVerbosity();
+    
+    void SaveNodes(std::string path);
+    void LoadNodes(std::string path);
+
+
 
 private:
 	CKheperaUtility* m_pUtil;

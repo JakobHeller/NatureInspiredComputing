@@ -2,7 +2,11 @@
 #define __Controller_H__
 
 #include "ThreadableBase.h"
+#include <fstream>
+#include <iomanip>
+using namespace std;
 
+typedef struct { double data[2];  } Double2;
 struct SNode { Int8 center; double lWeight; double rWeight; double activity; };
 
 #define INPUT_COUNT 8
@@ -17,7 +21,14 @@ class CController : public CThreadableBase
 public:
 	CController(CKheperaUtility* pUtil);
 
+    void LoadNodesFromFile(std::string path);
+    void SaveNodesToFile(std::string path);
     void ListNodes();
+    
+    std::fstream file;
+    std::string line;
+    Int8 temp_read_int;
+    Double2 temp_read_double;
     
 protected:
 	virtual void DoCycle();

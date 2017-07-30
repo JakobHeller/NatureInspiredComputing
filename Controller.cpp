@@ -1,8 +1,13 @@
 #include <math.h>
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 #include <iomanip>
+using namespace std;
 #include "Controller.h"
+#include <sstream>
+#include <iterator>
+#include <vector>
 
 #define DISTANCE_LIMIT (0.5 * CLOSE_SENSOR_VAL)
 
@@ -34,6 +39,61 @@ CController::CController(CKheperaUtility * pUtil) : CThreadableBase(pUtil)
 	// pre-train
 	CreateTrainingData();
 	Train();
+}
+
+void CController::LoadNodesFromFile(std::string path)
+{
+    //clean all other nodes! 
+    m_NetworkNodes.resize(0); //TODO This is arguably not the best option
+    
+    file.open (path);
+    if (file.is_open())
+        {
+            while ( getline( file, line ) ) 
+                {   
+                    std::stringstream ss(line);
+                    for ( int iter=0 ; iter<8; iter++ ) 
+                        {
+                            ss >> temp_read_int.data[iter];
+                            
+                        } 
+                    for ( int iter=0 ; iter<2; iter++ ) 
+                        {
+                            ss >> temp_read_double.data[iter];
+                        }
+                    AddNode(temp_read_int, temp_read_double.data[0] , temp_read_double.data[1]);
+                }
+                
+        }
+    else cout << "Unable to open file";
+            
+    file.close();
+
+            
+}
+
+void CController::SaveNodesToFile(std::string path)
+{
+    //opens the file and writes line by line a new safe overwrites the old data
+    file.open (path);
+    for (auto it = m_NetworkNodes.begin(); it != m_NetworkNodes.end(); it++)
+    {
+ 
+       if (file.is_open())
+            {
+                for(int i = 0; i < INPUT_COUNT; i++)
+                    {
+                    file << " " << it->center.data[i];
+                    }
+                    file << " " << it->lWeight << " " << it->rWeight << std::endl;
+            }
+        else cout << "Unable to open file";
+            
+    }file.close();
+    
+    
+   
+        
 }
 
 void CController::DoCycle()
@@ -301,7 +361,7 @@ void CController::ListNodes()
         {
             std::cout << " " << std::setfill(' ') << std::setw(4) << it->center.data[i];
         }
-        std::cout << " with weights " << it->lWeight << " and " << it->rWeight << std::endl;
+        std::cout << " => L: " << it->lWeight << " R: " << it->rWeight << std::endl;
     }
 }
 

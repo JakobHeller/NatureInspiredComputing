@@ -63,3 +63,14 @@ void CSmartKhepera::StopVerbosity()
 {
 	m_pUtil->SetVerbosity(false);
 }
+
+void CSmartKhepera::SaveNodes(std::string path)
+{
+    m_pControl->SaveNodesToFile(path);
+
+}
+void CSmartKhepera::LoadNodes(std::string path)
+{
+    m_pControl->LoadNodesFromFile(path);
+    
+}
